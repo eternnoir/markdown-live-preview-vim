@@ -1,0 +1,28 @@
+ 
+      if (window.MozWebSocket) {
+        window.WebSocket = window.MozWebSocket;
+      }
+
+      function openConnection() {
+        conn = new WebSocket('ws://127.0.0.1:5566');    
+        document.body.innerHTML = 'Connecting...'
+        conn.onopen = function () {
+          document.body.innerHTML = 'Waiting'
+        };
+
+        conn.onmessage = function (event) {
+          var html = JSON.parse(event.data);
+          var i,s='';
+          for(i=0;i<20;i++) s+='<br/>';
+          document.body.innerHTML = html+s;
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        };
+
+        conn.onclose = function (event) {
+          document.body.innerHTML = 'Disconnected.'
+        };
+      }
+
+      setTimeout(function () {
+        openConnection();
+      }, 1000);

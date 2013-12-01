@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset=utf-8>
+    <title>vim instant markdown (py)</title>
+  <link rel="stylesheet" href="./template/css/github.css">
+ <link rel="stylesheet" href="./template/css/pyg.css">
+  </head>
+  <body>
+    <script>
+ 
+      if (window.MozWebSocket) {
+        window.WebSocket = window.MozWebSocket;
+      }
+
+      function openConnection() {
+        conn = new WebSocket('ws://127.0.0.1:5566');    
+        document.body.innerHTML = 'Connecting...'
+        conn.onopen = function () {
+          document.body.innerHTML = 'Waiting'
+        };
+
+        conn.onmessage = function (event) {
+          var html = JSON.parse(event.data);
+          var i,s='';
+          for(i=0;i<20;i++) s+='<br/>';
+          document.body.innerHTML = html+s;
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        };
+
+        conn.onclose = function (event) {
+          document.body.innerHTML = 'Disconnected.'
+        };
+      }
+
+      setTimeout(function () {
+        openConnection();
+      }, 1000);
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true } });
+    </script>
+    <script type="text/javascript" 
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> 
+    </script>
+  </body>
+</html>
